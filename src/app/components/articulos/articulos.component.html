@@ -18,7 +18,8 @@
     <label class="col-form-label col-sm-2 offset-sm-1"> Activo: </label>
     <div class="col-sm-3">
       <select class="form-control" name="Activo">
-        <option *ngFor="let opt of OpcionesActivo" [ngValue]="opt.Id"></option>
+        <option *ngFor="let opt of OpcionesActivo" [ngValue]="opt.Id">
+        {{ opt.Nombre }}</option>
       </select>
     </div>
   </div>
@@ -338,11 +339,11 @@
         >Activo</label
       >
       <div class="col-sm-6">
-        <select name="Activo" [disabled]="true" class="form-control">
+        <select name="Activo" [disabled]="false" class="form-control">
           <option
             *ngFor="let opt of OpcionesActivo"
             [ngValue]="opt.Id"
-          ></option>
+          >{{ opt.Nombre }}</option>
         </select>
       </div>
     </div>

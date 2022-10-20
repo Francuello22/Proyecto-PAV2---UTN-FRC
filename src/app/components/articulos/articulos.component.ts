@@ -119,21 +119,30 @@ export class ArticulosComponent implements OnInit {
 
   // grabar tanto altas como modificaciones
   Grabar() {
-    this.submitted = true;
+    //this.submitted = true;
     // verificar que los validadores esten OK
     if (this.FormRegistro.invalid) {
       return;
     }
     //hacemos una copia de los datos del formulario, para modificar la fecha y luego enviarlo al servidor
-    const itemCopy = { ...this.FormRegistro.value };
+    const itemCopy: Articulo = { 
+      IdArticulo: this.FormRegistro.value.IdArticulo,
+      Nombre: this.FormRegistro.value.Nombre,
+      Activo: this.FormRegistro.value.Activo,
+      Precio: this.FormRegistro.value.Precio,
+      Stock: this.FormRegistro.value.Stock,
+      CodigoDeBarra: this.FormRegistro.value.CodigoDeBarra,
+      IdArticuloFamilia: this.FormRegistro.value.IdArticuloFamilia,
+      FechaAlta: this.FormRegistro.value.FechaAlta,
+    };
 
     //convertir fecha de string dd/MM/yyyy a ISO para que la entienda webapi
     var arrFecha = itemCopy.FechaAlta.substr(0, 10).split('/');
     if (arrFecha.length == 3)
       itemCopy.FechaAlta = new Date(
-        arrFecha[2],
-        arrFecha[1] - 1,
-        arrFecha[0]
+        parseInt(arrFecha[2]),
+        parseInt(arrFecha[1])- 1,
+        parseInt(arrFecha[0])
       ).toISOString();
 
     // agregar post
@@ -141,6 +150,7 @@ export class ArticulosComponent implements OnInit {
       this.articulosService.post(itemCopy).subscribe((res: any) => {
         this.Volver();
         this.modalDialogService.Alert('Registro agregado correctamente.');
+        this.submitted = true;
         this.Buscar();
       });
     } else {
@@ -150,6 +160,7 @@ export class ArticulosComponent implements OnInit {
         .subscribe((res: any) => {
           this.Volver();
           this.modalDialogService.Alert('Registro modificado correctamente.');
+          this.submitted = true;
           this.Buscar();
         });
     }
