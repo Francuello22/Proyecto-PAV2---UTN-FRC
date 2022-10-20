@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbPaginationModule, NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal-dialog',
@@ -44,10 +44,10 @@ export class ModalDialogComponent implements OnInit {
           this.classHeader = 'bg-warning';
           this.faIcon = 'fa fa-exclamation-triangle';
           break;
-        default:
-          this.classHeader = 'bg-success';
-          break;
-        }
-      }
+          default:
+        this.classHeader = 'bg-success';
+        break;
     }
+  }
+}
     
