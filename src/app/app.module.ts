@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
-
+import { CortarCantidadCaracteres } from './pipes/custom-pipe.pipe';
 import { AppComponent } from './app.component';
 import { InicioComponent } from './components/inicio/inicio.component';
 import { ArticuloFamiliasComponent } from './components/articulo-familias/articulo-familias.component';
@@ -45,6 +45,7 @@ import { MyInterceptor } from './shared/my-interceptor';
     ArticuloFamiliasComponent,
     ArticulosComponent,
     MenuComponent,
+    CortarCantidadCaracteres
   ],
   entryComponents: [ModalDialogComponent],
   providers: [
