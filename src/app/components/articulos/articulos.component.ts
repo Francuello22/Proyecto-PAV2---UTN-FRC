@@ -4,9 +4,9 @@ import { ArticuloFamilia } from '../../models/articulo-familia';
 import { MockArticulosService } from '../../services/mock-articulos.service';
 import { MockArticulosFamiliasService } from '../../services/mock-articulos-familias.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ArticulosService } from "../../services/articulos.service";
+import { ArticulosService } from '../../services/articulos.service';
 import { ArticulosFamiliasService } from '../../services/articulos-familias.service';
-import { ModalDialogService } from "../../services/modal-dialog.service";
+import { ModalDialogService } from '../../services/modal-dialog.service';
 
 @Component({
   selector: 'app-articulos',
@@ -29,8 +29,6 @@ export class ArticulosComponent implements OnInit {
     RD: ' Revisar los datos ingresados...',
   };
 
-  submitted = false;
-
   Items: Articulo[] | null = null;
   RegistrosTotal: number = 1;
   Familias: ArticuloFamilia[] | null = null;
@@ -43,14 +41,15 @@ export class ArticulosComponent implements OnInit {
     { Id: false, Nombre: 'NO' },
   ];
 
+  submitted = false;
+
   constructor(
     //private articulosService: MockArticulosService,
     //private articulosFamiliasService: MockArticulosFamiliasService,
     private articulosService: ArticulosService,
     private articulosFamiliasService: ArticulosFamiliasService,
     private modalDialogService: ModalDialogService
-  )
- {}
+  ) {}
 
   ngOnInit() {
     this.GetFamiliasArticulos();
@@ -63,23 +62,27 @@ export class ArticulosComponent implements OnInit {
   }
 
   Agregar() {
-    this.submitted = false;
-    this.FormRegistro.markAsUntouched();
     this.AccionABMC = 'A';
     this.FormRegistro.reset({ Activo: true, IdArticulo: 0 });
+    this.submitted = false;
+    this.FormRegistro.markAsUntouched();
   }
 
-   // Buscar segun los filtros, establecidos en FormRegistro
- Buscar() {
-  this.modalDialogService.BloquearPantalla();
-  this.articulosService
-    .get(this.FormBusqueda.value.Nombre, this.FormBusqueda.value.Activo, this.Pagina)
-    .subscribe((res: any) => {
-      this.Items = res.Items;
-      this.RegistrosTotal = res.RegistrosTotal;
-      this.modalDialogService.DesbloquearPantalla();
-    });
-}
+  // Buscar segun los filtros, establecidos en FormRegistro
+  Buscar() {
+    this.modalDialogService.BloquearPantalla();
+    this.articulosService
+      .get(
+        this.FormBusqueda.value.Nombre,
+        this.FormBusqueda.value.Activo,
+        this.Pagina
+      )
+      .subscribe((res: any) => {
+        this.Items = res.Items;
+        this.RegistrosTotal = res.RegistrosTotal;
+        this.modalDialogService.DesbloquearPantalla();
+      });
+  }
 
   // Obtengo un registro especifico según el Id
   BuscarPorId(Item: Articulo, AccionABMC: string) {
@@ -104,13 +107,14 @@ export class ArticulosComponent implements OnInit {
   // comienza la modificacion, luego la confirma con el metodo Grabar
   Modificar(Item: Articulo) {
     if (!Item.Activo) {
-      this.modalDialogService.Alert
-      ('No puede modificarse un registro Inactivo.');
+      this.modalDialogService.Alert(
+        'No puede modificarse un registro Inactivo.'
+      );
       return;
     }
+    this.BuscarPorId(Item, 'M');
     this.submitted = false;
     this.FormRegistro.markAsUntouched();
-    this.BuscarPorId(Item, 'M');
   }
 
   // grabar tanto altas como modificaciones
@@ -145,30 +149,27 @@ export class ArticulosComponent implements OnInit {
         .put(itemCopy.IdArticulo, itemCopy)
         .subscribe((res: any) => {
           this.Volver();
-          this.modalDialogService.Alert
-          ('Registro modificado correctamente.');
+          this.modalDialogService.Alert('Registro modificado correctamente.');
           this.Buscar();
         });
     }
   }
-// representa la baja logica 
-ActivarDesactivar(Item:Articulo) {
-  this.modalDialogService.Confirm(
-    "Esta seguro de " +
-      (Item.Activo ? "desactivar" : "activar") +
-      " este registro?",
-    undefined,
-    undefined,
-    undefined,
-    () =>
-      this.articulosService  
-        .delete(Item.IdArticulo)
-        .subscribe((res: any) => 
-          this.Buscar()
-        ),
-    null
-  );
-}
+
+  ActivarDesactivar(Item: Articulo) {
+    this.modalDialogService.Confirm(
+      'Esta seguro de ' +
+        (Item.Activo ? 'desactivar' : 'activar') +
+        ' este registro?',
+      undefined,
+      undefined,
+      undefined,
+      () =>
+        this.articulosService
+          .delete(Item.IdArticulo)
+          .subscribe((res: any) => this.Buscar()),
+      null
+    );
+  }
 
   // Volver desde Agregar/Modificar
   Volver() {
@@ -176,15 +177,13 @@ ActivarDesactivar(Item:Articulo) {
   }
 
   ImprimirListado() {
-    this.modalDialogService.Alert
-    ('Sin desarrollar...');
+    this.modalDialogService.Alert('Sin desarrollar...');
   }
 
-  GetArticuloFamiliaNombre(Id:number) {
-    let Nombre = this.Familias.find(x => x.IdArticuloFamilia === Id)?.Nombre;
+  GetArticuloFamiliaNombre(Id: number) {
+    let Nombre = this.Familias.find((x) => x.IdArticuloFamilia === Id)?.Nombre;
     return Nombre;
   }
-
 
   FormBusqueda = new FormGroup({
     Nombre: new FormControl(null),
@@ -193,48 +192,37 @@ ActivarDesactivar(Item:Articulo) {
 
   FormRegistro = new FormGroup({
     IdArticulo: new FormControl(0),
-    
     Nombre: new FormControl('', [
       Validators.required,
       Validators.minLength(4),
       Validators.maxLength(55),
     ]),
-
     Precio: new FormControl(null, [
       Validators.required,
       Validators.pattern('[0-9]{1,7}'),
     ]),
-
     Stock: new FormControl(null, [
       Validators.required,
       Validators.pattern('[0-9]{1,7}'),
     ]),
-
     CodigoDeBarra: new FormControl('', [
       Validators.required,
-      Validators.pattern('[0-9]{13}'),  
+      Validators.pattern('[0-9]{13}'),
     ]),
-
     IdArticuloFamilia: new FormControl('', [Validators.required]),
-
     FechaAlta: new FormControl('', [
       Validators.required,
       Validators.pattern(
         '(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20)[0-9]{2}'
       ),
-
     ]),
-
     Activo: new FormControl(true),
-
-    
-
   });
 }
 
-@Pipe({name: 'activo'})
+@Pipe({ name: 'activo' })
 export class ActivoPipe implements PipeTransform {
-  transform(articulo: string, activo: boolean): string{
+  transform(articulo: string, activo: boolean): string {
     if (activo) {
       return articulo + ' (Activo)';
     } else {
